@@ -10,6 +10,10 @@ body {
 font-family: 'Libre Caslon Text', serif;
 }
 
+header {
+  text-align: center;
+}
+
 h1, h2, h3, h4, h5 {
   font-family: 'Forum', cursive;
 }
@@ -32,10 +36,18 @@ code {
 }
 .articles h1 {
   font-size: 1.3rem;
+  margin-top: 0px;
+  margin-bottom: 0.5rem;
 }
 .articles p {
   font-size: normal;
   display:none;
+}
+
+.articles .source {
+  font-size: small;
+  color: lightslategrey;
+  text-transform: uppercase;
 }
 
 .articles article .date {
@@ -48,10 +60,9 @@ code {
 }
 
 .articles a:visited {
-  color: lightgrey;
+  color: black;
   text-decoration: none;
 }
-
 
 /* Extra-wide grid-posts */
 .articles article:nth-child(31n + 1) {
@@ -75,17 +86,17 @@ code {
 }
 
 .articles article:nth-child(31n + 1) img {
-  display:initial;
+  display:none;
   object-fit: cover;
   filter: opacity(80%) grayscale(50%);
 }
 .articles article:nth-child(16n + 2) img {
-  display:initial;
+  display:none;
   object-fit: cover;
   filter: grayscale(100%);
 }
 .articles article:nth-child(16n + 10) img {
-  display:initial;
+  display:none;
   object-fit: cover;
   filter: grayscale(100%);
 }
