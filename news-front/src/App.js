@@ -101,6 +101,19 @@ function App() {
 
   const sortCategories = getTopCategories(data);
 
+  const colors = new Map();
+
+  var counter = 0;
+  sortCategories.sortedTags.slice(4).forEach( category => {
+    colors.set(category, "#355C7D");
+  })
+
+  colors.set(sortCategories.sortedTags[0], "#F8B195");
+  colors.set(sortCategories.sortedTags[1], "#F67280");
+  colors.set(sortCategories.sortedTags[2], "#C06C84");
+  colors.set(sortCategories.sortedTags[3], "#6C5B7B");
+  colors.set(sortCategories.sortedTags[4], "#355C7D");
+
   return (
     <div>
       <Layout>
@@ -123,7 +136,7 @@ function App() {
 
           return (
           <div className="categoryNews">
-            <div className="categoryHeading">
+            <div className="categoryHeading" style = {{backgroundColor: colors.get(category)}}>
               <a name={category}><h1 className="categoryHeadingTitle">{category}</h1></a>
               <div />
             </div>
