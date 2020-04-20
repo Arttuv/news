@@ -33,6 +33,55 @@ function getWeekNumber(d) {
   return [d.getUTCFullYear(), weekNo];
 }
 
+function getTopCategories(data) {
+
+  let categories = new Map();
+
+  data.Items.forEach( item => {
+
+
+    /** 
+     * Looks like the first category is the "real one". 
+    */
+    var category = item.item.data.categories[0];
+    if (categories.get(category) === undefined) {
+      categories.set(category, 1);
+      console.log("Setting  " + category + " to 1");
+    } else {
+      categories.set(category, categories.get(category) + 1);
+      console.log("Setting  " + category + " to " + categories.get(category));
+    }
+
+    /*item.item.data.categories.forEach(category => {
+      if (categories.get(category) === undefined) {
+        categories.set(category, 1);
+        console.log("Setting  " + category + " to 1");
+      } else {
+        categories.set(category, categories.get(category) + 1);
+        console.log("Setting  " + category + " to " + categories.get(category));
+      }
+    })*/
+
+  });
+
+
+  categories.forEach( (key, value, map) => {
+    console.log(key + " " + value);
+  });
+
+  let categoryTags = Array.from(categories.keys());
+  console.log("First hit: " + categoryTags[0]);
+
+  let sortedCategoryTags = categoryTags.sort(( a, b) => {
+    console.log("Sorting " + a + " to " + b + " " + categories.get(a) + " " + categories.get(b));
+    return categories.get(b) - categories.get(a);
+  });
+
+  console.log("Top hit: " + sortedCategoryTags[0] + " " + categories.get(sortedCategoryTags[0]));
+
+  return {"categories": categories, "sortedTags": sortedCategoryTags}
+}
+
 function App() {
 
   const [data, setData] = useState({Items: []});
@@ -50,26 +99,60 @@ function App() {
     fetchPhotos();
   }, []);
 
+  const sortCategories = getTopCategories(data);
+
   return (
     <div>
       <Layout>
       <BorderedTitle title= { "Viikko " + getWeekNumber(new Date())[1]}/>
-      <div className="articles">
-      {data.Items.map(newsItem => {
-        return newsItem.item.data !== undefined ? 
-
-        <article key={newsItem.guid}>
-                    {newsItem.item.data.enclosure !== undefined && (
-            <img className="enclosure" src={newsItem.item.data.enclosure.url}></img>
-          )}
-          <div className="source">Yle</div>
-          <a href={newsItem.item.data.link}><h1>{newsItem.item.data.title}</h1></a>
-          <p>{newsItem.item.data.contentSnippet}</p>
-        </article>
-        : 
-        <div>empty</div>
+      <div className="weekSummary">
         
-      })}
+      {sortCategories.sortedTags.map(category => {
+
+        return (
+            <div>{category} {sortCategories.categories.get(category)}</div>
+        )
+        })}
+
+
+      </div>
+
+      <div className="articlesByCategories">
+    
+        {sortCategories.sortedTags.map(category => {
+
+          return (
+          <div className="categoryNews">
+            <div className="categoryHeading">
+              <h1 className="categoryHeadingTitle">{category}</h1>
+              <div />
+            </div>
+            <div className="categoryNewsArticles"> 
+              {data.Items.map(newsItem => {
+                return ( (newsItem.item.data !== undefined) && (newsItem.item.data.categories[0] === category)) ? 
+                <article key={newsItem.guid}>
+                  <div className="articleInfo">
+                    <div className="source">Yle</div>
+                  </div>
+                  <a href={newsItem.item.data.link}><h1>{newsItem.item.data.title}</h1></a>
+                  <p className="articleSummary">{newsItem.item.data.contentSnippet}</p>
+                  {newsItem.item.data.enclosure !== undefined && (
+                    <div className="articleCoverContainer">
+                      <img className="articleCover" src={newsItem.item.data.enclosure.url}></img>
+                    </div>
+                  )}
+                </article>
+                : 
+                null
+                
+              })}
+            </div>
+            </div>
+          )
+        })}
+      
+      
+
       </div>
       </Layout>
     </div>
