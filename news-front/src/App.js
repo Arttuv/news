@@ -110,7 +110,7 @@ function App() {
       {sortCategories.sortedTags.map(category => {
 
         return (
-            <div>{category} {sortCategories.categories.get(category)}</div>
+            <div><a href={"#" + category}>{category} {sortCategories.categories.get(category)}</a></div>
         )
         })}
 
@@ -124,12 +124,12 @@ function App() {
           return (
           <div className="categoryNews">
             <div className="categoryHeading">
-              <h1 className="categoryHeadingTitle">{category}</h1>
+              <a name={category}><h1 className="categoryHeadingTitle">{category}</h1></a>
               <div />
             </div>
             <div className="categoryNewsArticles"> 
               {data.Items.map(newsItem => {
-                return ( (newsItem.item.data !== undefined) && (newsItem.item.data.categories[0] === category)) ? 
+                return ( (newsItem.item.data !== undefined) && (newsItem.item.data.weekNumber[1] === getWeekNumber(new Date())[1]) && (newsItem.item.data.categories[0] === category)) ? 
                 <article key={newsItem.guid}>
                   <div className="articleInfo">
                     <div className="source">Yle</div>
@@ -150,8 +150,6 @@ function App() {
             </div>
           )
         })}
-      
-      
 
       </div>
       </Layout>
