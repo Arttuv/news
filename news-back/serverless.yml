@@ -58,18 +58,27 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+
+  updateFeeds:
+    handler: handler.updateFeeds
+    events:
+        - http:
+            path: updateFeeds
+            method: get
+            cors: true
+
   hello:
-    handler: handler.hello
+    handler: handler.getNews
     events:
       - http:
-          path: hello
+          path: getNews
           method: get
           cors: true
   index:
-    handler: handler.hello
+    handler: handler.getNews
     events:
       - http: 
-          path: hello
+          path: getNews
           method: get
           cors: true
 

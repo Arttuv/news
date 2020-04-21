@@ -35,7 +35,61 @@ function getWeekNumber(d) {
   return [d.getUTCFullYear(), weekNo];
 }
 
-module.exports.hello = async event => {
+async function fetchAndStoreFeed(feedName, feedUrl) {
+  let feed = await parser.parseURL('https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss');
+  let requestItems = []
+
+  feed.items.forEach(item => {
+    console.log(item.title + ':' + item.link + " " + getWeekNumber(new Date(item.isoDate)));
+
+    item["weekNumber"] = getWeekNumber(new Date(item.isoDate));
+    item["feedName"] = feedName;
+
+    var PutRequest = {
+      PutRequest: {
+      Item: {
+        guid: item.guid,
+        item: {data: item}
+      }}
+    }
+    requestItems.push(PutRequest)
+  });
+
+  if (requestItems.length > 25) {
+    requestItems = requestItems.slice(0, 24);
+  }
+
+  var params = {
+    RequestItems: {
+      "news": requestItems
+    }
+  }
+  
+  dynamo.batchWrite(params, function(err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      console.log("Success", data);
+    }
+  });
+
+  return {
+    statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: "Works?"
+  };
+}
+
+module.exports.updateFeeds = async event => {
+  fetchAndStoreFeed('Yle Pääuutiset', 'https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss');
+  fetchAndStoreFeed('Yle Tiede', 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET&concepts=18-819');
+  fetchAndStoreFeed('Yle Luonto', 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET&concepts=18-35354');
+}
+
+module.exports.getNews = async event => {
   console.log("test");
 
   const newsItems = await dynamo.scan({TableName: "news"}).promise();
@@ -68,50 +122,6 @@ module.exports.hello = async event => {
     }
 
   })*/
-
-  let feed = await parser.parseURL('https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss');
-  let requestItems = []
-
-  feed.items.forEach(item => {
-    console.log(item.title + ':' + item.link + " " + getWeekNumber(new Date(item.isoDate)));
-
-    item["weekNumber"] = getWeekNumber(new Date(item.isoDate));
-
-    var PutRequest = {
-      PutRequest: {
-      Item: {
-        guid: item.guid,
-        item: {data: item}
-      }}
-    }
-    requestItems.push(PutRequest)
-  });
-
-  if (requestItems.length > 25) {
-    requestItems = requestItems.slice(0, 24);
-  }
-
-  var params = {
-    RequestItems: {
-      "news": requestItems
-    }
-  }
-  
-  dynamo.batchWrite(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data);
-    }
-  });
-
-  /*dynamo.put( {
-    TableName: 'news', 
-    Item: {
-      guid: "testi",
-      item: {data: "dataaaa"}
-    }
-  }).promise();*/
 
     
   return {
