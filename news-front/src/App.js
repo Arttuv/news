@@ -42,7 +42,7 @@ function getTopCategories(data) {
 
     /** 
      * Looks like the first category is the "real one". 
-    */
+     */
     var category = item.item.data.categories[0];
     if (categories.get(category) === undefined) {
       categories.set(category, 1);
@@ -163,7 +163,6 @@ function App() {
                 </article>
                 : 
                 null
-                
               })}
             </div>
             </div>
