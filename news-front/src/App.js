@@ -114,6 +114,13 @@ function App() {
   colors.set(sortCategories.sortedTags[3], "#6C5B7B");
   colors.set(sortCategories.sortedTags[4], "#355C7D");
 
+  const categoryTags = new Map();
+  sortCategories.sortedTags.forEach( (item, index) => {
+    categoryTags.set(item, "category-" + index);
+  })
+
+  // style = {{backgroundColor: colors.get(category)}
+
   return (
     <div>
       <Layout>
@@ -123,10 +130,9 @@ function App() {
       {sortCategories.sortedTags.map(category => {
 
         return (
-            <div><a href={"#" + category}>{category} {sortCategories.categories.get(category)}</a></div>
+            <div><a href={"#" + category}>{category}</a></div>
         )
         })}
-
 
       </div>
 
@@ -135,9 +141,9 @@ function App() {
         {sortCategories.sortedTags.map(category => {
 
           return (
-          <div className="categoryNews">
-            <div className="categoryHeading" style = {{backgroundColor: colors.get(category)}}>
-              <a name={category}><h1 className="categoryHeadingTitle">{category}</h1></a>
+          <div className={"categoryNews " + categoryTags.get(category)}>
+            <div className={"categoryHeading " + categoryTags.get(category)} >
+              <a name={category} className=" categoryTag"><h1 className="categoryHeadingTitle">{category}</h1></a>
               <div />
             </div>
             <div className="categoryNewsArticles"> 
