@@ -36,7 +36,7 @@ function getWeekNumber(d) {
 }
 
 async function fetchAndStoreFeed(feedName, feedUrl) {
-  let feed = await parser.parseURL('https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss');
+  let feed = await parser.parseURL(feedUrl);
   let requestItems = []
 
   feed.items.forEach(item => {
@@ -65,13 +65,13 @@ async function fetchAndStoreFeed(feedName, feedUrl) {
     }
   }
   
-  dynamo.batchWrite(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data);
-    }
-  });
+  await dynamo.batchWrite(params).promise(); 
+}
+
+module.exports.updateFeeds = async event => {
+  await fetchAndStoreFeed('Yle Pääuutiset', 'https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss');
+  await fetchAndStoreFeed('Yle Tiede', 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET&concepts=18-819');
+  await fetchAndStoreFeed('Yle Luonto', 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET&concepts=18-35354');
 
   return {
     statusCode: 200,
@@ -81,12 +81,6 @@ async function fetchAndStoreFeed(feedName, feedUrl) {
     },
     body: "Works?"
   };
-}
-
-module.exports.updateFeeds = async event => {
-  fetchAndStoreFeed('Yle Pääuutiset', 'https://feeds.yle.fi/uutiset/v1/majorHeadlines/YLE_UUTISET.rss');
-  fetchAndStoreFeed('Yle Tiede', 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET&concepts=18-819');
-  fetchAndStoreFeed('Yle Luonto', 'https://feeds.yle.fi/uutiset/v1/recent.rss?publisherIds=YLE_UUTISET&concepts=18-35354');
 }
 
 module.exports.getNews = async event => {
