@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Layout from './components/layout'
 import BorderedTitle from './components/bordered-title'
+import FeedLayout from './components/feed-layout'
 
 /* For a given date, get the ISO week number
  *
@@ -73,7 +74,6 @@ function getTopCategories(data) {
   console.log("First hit: " + categoryTags[0]);
 
   let sortedCategoryTags = categoryTags.sort(( a, b) => {
-    console.log("Sorting " + a + " to " + b + " " + categories.get(a) + " " + categories.get(b));
     return categories.get(b) - categories.get(a);
   });
 
@@ -124,52 +124,9 @@ function App() {
   return (
     <div>
       <Layout>
-      <BorderedTitle title= { "Viikko " + getWeekNumber(new Date())[1]}/>
-      <div className="weekSummary">
-        
-      {sortCategories.sortedTags.map(category => {
-
-        return (
-            <div><a href={"#" + category}>{category}</a></div>
-        )
-        })}
-
-      </div>
-
-      <div className="articlesByCategories">
-    
-        {sortCategories.sortedTags.map(category => {
-
-          return (
-          <div className={"categoryNews " + categoryTags.get(category)}>
-            <div className={"categoryHeading " + categoryTags.get(category)} >
-              <a name={category} className=" categoryTag"><h1 className="categoryHeadingTitle">{category}</h1></a>
-              <div />
-            </div>
-            <div className="categoryNewsArticles"> 
-              {data.Items.map(newsItem => {
-                return ( (newsItem.item.data !== undefined) && (newsItem.item.data.weekNumber[1] === getWeekNumber(new Date())[1]) && (newsItem.item.data.categories[0] === category)) ? 
-                <article key={newsItem.guid}>
-                  <div className="articleInfo">
-                    <div className="source">Yle</div>
-                  </div>
-                  <a href={newsItem.item.data.link}><h1>{newsItem.item.data.title}</h1></a>
-                  <p className="articleSummary">{newsItem.item.data.contentSnippet}</p>
-                  {newsItem.item.data.enclosure !== undefined && (
-                    <div className="articleCoverContainer">
-                      <img className="articleCover" src={newsItem.item.data.enclosure.url}></img>
-                    </div>
-                  )}
-                </article>
-                : 
-                null
-              })}
-            </div>
-            </div>
-          )
-        })}
-
-      </div>
+        <FeedLayout data={data} feedName="Yle Pääuutiset" />
+        <FeedLayout data={data} feedName="Yle Tiede" />
+        <FeedLayout data={data} feedName="Yle Luonto" />
       </Layout>
     </div>
   );
