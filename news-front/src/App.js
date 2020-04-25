@@ -3,6 +3,7 @@ import axios from 'axios';
 import Layout from './components/layout'
 import BorderedTitle from './components/bordered-title'
 import FeedLayout from './components/feed-layout'
+import CategorizedLayout from './components/categorized-layout';
 
 /* For a given date, get the ISO week number
  *
@@ -37,22 +38,22 @@ function getWeekNumber(d) {
 function getTopCategories(data) {
 
   let categories = new Map();
+  let categoryAssignments = new Map();
 
   data.Items.forEach( item => {
-
-
+    item.item.data.assigned = false;
     /** 
      * Looks like the first category is the "real one". 
      */
-    var category = item.item.data.categories[0];
-    if (categories.get(category) === undefined) {
-      categories.set(category, 1);
-      console.log("Setting  " + category + " to 1");
-    } else {
-      categories.set(category, categories.get(category) + 1);
-      console.log("Setting  " + category + " to " + categories.get(category));
-    }
-
+    item.item.data.categories.slice(0, 2).forEach( category => {
+      if (categories.get(category) === undefined) {
+        categories.set(category, 1);
+        console.log("Setting  " + category + " to 1");
+      } else {
+        categories.set(category, categories.get(category) + 1);
+        console.log("Setting  " + category + " to " + categories.get(category));
+      }
+    });
     /*item.item.data.categories.forEach(category => {
       if (categories.get(category) === undefined) {
         categories.set(category, 1);
@@ -64,7 +65,6 @@ function getTopCategories(data) {
     })*/
 
   });
-
 
   categories.forEach( (key, value, map) => {
     console.log(key + " " + value);
@@ -79,13 +79,98 @@ function getTopCategories(data) {
 
   console.log("Top hit: " + sortedCategoryTags[0] + " " + categories.get(sortedCategoryTags[0]));
 
-  return {"categories": categories, "sortedTags": sortedCategoryTags}
+
+  data.Items.forEach( item => {
+    item.categoryWeight = 0;
+
+    item.item.data.categories.forEach( category => {
+      item.categoryWeight += categories.get(category);
+    })
+
+  });
+
+  let itemsSortedByWeight = Array.from(data.Items).sort( (a,b) => {
+    return a.categoryWeight - b.categoryWeight;
+  });
+
+  console.log("Category weights: ");
+  itemsSortedByWeight.forEach(item => {
+    console.log(item.item.data.title + " " + item.categoryWeight);
+  })
+
+  sortedCategoryTags.forEach( category => {
+    let categoryAssignment = {};
+    categoryAssignment.assignedNews = [];
+    categoryAssignment.weight = categories.get(category);
+    categoryAssignment.demand = 4;
+    categoryAssignment.category = category;
+    categoryAssignments.set(category, categoryAssignment);
+  });
+
+  console.log("Assignments")
+
+  itemsSortedByWeight.forEach( item => {
+
+    sortedCategoryTags.forEach( category => {
+
+      if (categories.get(category) > Math.min(data.Items.length / 10, 1)) {
+        if ((item.item.data.categories.includes(category)) && (item.item.data.assigned !==true)) {
+          
+          var categoryAssignment = categoryAssignments.get(category);
+          
+          if (categoryAssignment.assignedNews.length < categoryAssignment.demand) {
+
+            item.item.data.assigned = true;
+            categoryAssignment.assignedNews.push(item);
+  
+          }
+          
+        }
+    }
+
+    });
+
+  });
+
+  
+  itemsSortedByWeight.forEach( item => {
+
+    sortedCategoryTags.forEach( category => {
+      if (categories.get(category) > Math.max(data.Items.length / 25, 2)) {
+
+        if ((item.item.data.categories.includes(category)) && (item.item.data.assigned !==true)) {
+          
+          var categoryAssignment = categoryAssignments.get(category);
+          
+          if (categoryAssignment.assignedNews.length < categoryAssignment.demand) {
+
+            item.item.data.assigned = true;
+            categoryAssignment.assignedNews.push(item);
+  
+          }
+        }
+      }
+
+    });
+
+  });
+
+
+  categoryAssignments.forEach( (value, key, map) => {
+    console.log(key + ": ");
+    value.assignedNews.forEach( item => {
+      item.item.sizeCategory = "size-" + value.assignedNews.length;
+      console.log(item.item.data.title);
+    });
+  });
+
+  return {"categories": categories, "sortedTags": sortedCategoryTags, "categoryAssignments": categoryAssignments}
 }
 
 function App() {
 
   const [data, setData] = useState({Items: []});
-
+  
   useEffect(() => {  
     const fetchPhotos = async() => {
       fetch('https://et63potkt6.execute-api.us-east-1.amazonaws.com/dev/hello')
@@ -124,9 +209,10 @@ function App() {
   return (
     <div>
       <Layout>
-        <FeedLayout data={data} feedName="Yle Pääuutiset" />
-        <FeedLayout data={data} feedName="Yle Tiede" />
-        <FeedLayout data={data} feedName="Yle Luonto" />
+        {sortCategories.categoryAssignments !== undefined &&
+          <CategorizedLayout data={sortCategories} feedName="Kaikki"/>
+        }
+        
       </Layout>
     </div>
   );
@@ -135,3 +221,8 @@ export default App;
 
 
 
+/*
+<FeedLayout data={data} feedName="Yle Pääuutiset" />
+        <FeedLayout data={data} feedName="Yle Tiede" />
+        <FeedLayout data={data} feedName="Yle Luonto" />
+*/

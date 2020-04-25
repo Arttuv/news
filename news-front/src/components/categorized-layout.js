@@ -92,9 +92,9 @@ function getWeekNumber(d) {
     return {"categories": categories, "sortedTags": sortedCategoryTags}
   }
 
-const FeedLayout = ({ data, feedName }) => {
+const CategorizedLayout = ({ data, feedName }) => {
   
-    const sortCategories = getTopCategories(data, feedName, getWeekNumber(new Date()));
+    const sortCategories = data; // getTopCategories(data, feedName, getWeekNumber(new Date()));
     const usedArticles = [];
 
     const colors = new Map();
@@ -118,34 +118,63 @@ const FeedLayout = ({ data, feedName }) => {
     // style = {{backgroundColor: colors.get(category)}
   
     return (
-      <div>
-        <BorderedTitle title= { "Viikko " + getWeekNumber(new Date())[1] + " " + feedName}/>
+      <div className="categoriesContainer">
+        <div className="categoriesHeader">
+       
         <div className="weekSummary">
-          
-        {sortCategories.sortedTags.map(category => {
-  
-          return (
-              <div key={feedName + "category#" + category}><a href={"#" + feedName + category}>{category}</a></div>
-          )
+
+          {[...data.categoryAssignments.values()].map(assignment => {
+              return (assignment.assignedNews.length > 0 ? (
+                <span key={"taglink" + assignment.category}><a href={"#category" + assignment.category}>{assignment.category}</a></span>
+              ) : null)    
           })}
-  
+          </div>
         </div>
   
-        <div className="articlesByCategories">
       
-          {sortCategories.sortedTags.map(category => {
+          
+          {[...data.categoryAssignments.values()].map(assignment => {
   
             return (
-            <div key={"categorynews#" + category} className={"categoryNews " + categoryTags.get(category)}>
-              <div className={"categoryHeading " + categoryTags.get(category)} >
-                <a id={feedName + category} className=" categoryTag"><h1 className="categoryHeadingTitle">{category}</h1></a>
+              assignment.assignedNews.length > 0 && (
+              <div key={"category" + assignment.category} id={"category" + assignment.category} className={"categoryContainer " + categoryTags.get(assignment.category) + " categorySize-" + assignment.assignedNews.length} >
+                <h1 className="categoryTitle">{assignment.category}</h1>
+                <div className="categoryNews">
+                  {assignment.assignedNews.map( newsItem => {
+                    return (
+                      <article key={"newsItem" + newsItem.guid} className={"newsItem newsItem-" + newsItem.item.sizeCategory}>
+                        <h1><a href={newsItem.guid}>{newsItem.item.data.title}</a></h1>
+                        <p>{newsItem.item.data.contentSnippet}</p>
+                        {newsItem.item.data.enclosure !== undefined && (
+                          <div className="articleCoverContainer">
+                              <img className="articleCover" src={newsItem.item.data.enclosure.url}></img>
+                          </div>)}
+                      </article> 
+                    )
+                  })}
+                </div>
+              </div>
+              ))
+          })}
+  
+      </div>
+    );
+}
+
+export default CategorizedLayout;
+
+/*
+
+ <div key={"categorynews#" + assignment.category} className={"categoryNews " + categoryTags.get(assignment.category)}>
+              <div className={"categoryHeading " + categoryTags.get(assignment.category)} >
+                <a name={feedName + assignment.category} className=" categoryTag"><h1 className="categoryHeadingTitle">{assignment.category}</h1></a>
                 <div />
               </div>
               <div className="categoryNewsArticles"> 
-                {data.Items.map(newsItem => {
+                {assignment.assignedNes.map(newsItem => {
                     return ( (newsItem.item.data !== undefined) && 
                         (newsItem.item.data.weekNumber[1] === getWeekNumber(new Date())[1]) && 
-                        (newsItem.item.data.categories.includes(category)) &&
+                        (newsItem.item.data.categories.includes(assignment.category)) &&
                         (newsItem.item.data.feedName.localeCompare(feedName) === 0) &&
                         (!usedArticles.includes(newsItem.guid))
                         ) ? 
@@ -169,12 +198,5 @@ const FeedLayout = ({ data, feedName }) => {
                     })}
                  </div>
               </div>
-            )
-          })}
-  
-        </div>
-      </div>
-    );
-}
 
-export default FeedLayout;
+*/
