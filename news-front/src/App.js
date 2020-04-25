@@ -155,7 +155,6 @@ function getTopCategories(data) {
 
   });
 
-
   categoryAssignments.forEach( (value, key, map) => {
     console.log(key + ": ");
     value.assignedNews.forEach( item => {

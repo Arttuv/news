@@ -134,7 +134,7 @@ code {
   .categoriesContainer {
     display: grid;
     margin: auto;
-    grid-template-columns: minmax(540px, 1fr) minmax(540px, 1fr);
+    grid-template-columns: minmax(480px, 1fr) minmax(480px, 1fr);
     grid-template-rows: auto;
     grid-template-areas: 
       "toparealeft toparearight"
@@ -158,7 +158,6 @@ code {
   .categoryContainer:nth-child(even) {
     grid-column: 2 / span 1;
   }
-
 
 }
 
@@ -208,7 +207,7 @@ code {
   .weekSummary span {
     font-size: 0.5rem;
     color: white;
-    background-color: #C06C84;
+    background-color: #355C7D;
   }
 
   .weekSummary a {
