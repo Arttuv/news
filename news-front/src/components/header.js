@@ -9,7 +9,7 @@ const Header = ({ siteTitle, small}) => (
 
         {!small && (
           <span className="site-title">
-            <h1>Uutiset .</h1>
+            <h1><a href="/">Uutiset .</a></h1>
 
           <div className="site-description">Uutisia, hitaammin</div>
         </span>

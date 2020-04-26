@@ -20,6 +20,15 @@ header h1 {
   margin: 0;
 }
 
+header a {
+  color: black;
+  text-decoration: none;;
+}
+
+footer {
+  text-align: center;
+}
+
 h1, h2, h3, h4, h5 {
   font-family: 'Playfair Display', serif;
 }
@@ -76,6 +85,33 @@ h1, h2, h3, h4, h5 {
   column-gap: 16px;
 }
 
+.newsItem {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.newsItem:nth-of-type(odd) {
+  border-left: none;
+  border-right: solid 1px lightgray;
+  padding-right: 1rem;
+
+}
+
+.newsItem:last-of-type {
+  border-right: none;
+}
+
+.newsItem:nth-of-type(even) {
+  border-right: none;
+  padding-left: 0rem;
+}
+
+.newsItem:nth-child(n+3) .articleInfo {
+  border-top: solid 1px lightgray;
+  padding-top: 0.5rem;
+  margin-top: 1rem;
+}
+
 .newsItem h1 {
   line-height: 1rem;
 }
@@ -118,13 +154,13 @@ h1, h2, h3, h4, h5 {
 }
 
 .newsItem-size-2 h1 {
-  font-size: 1.5rem;
-  line-height: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.2rem;
 }
 
 .newsItem-size-3 h1 {
-  font-size: 1.5rem;
-  line-height: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.2rem;
 }
 
 .newsItem-size-3 p {
@@ -271,6 +307,15 @@ h1, h2, h3, h4, h5 {
     grid-auto-rows: 30px;
     padding: 0.2rem;
     background-color: white;
+  }
+
+  .newsItem {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .newsItem:last-of-type {
+    border-bottom: none;
   }
   
   .weekSummary span {
