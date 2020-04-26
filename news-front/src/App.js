@@ -176,8 +176,8 @@ function App() {
   const [data, setData] = useState({Items: []});
   
   useEffect(() => {  
-    const fetchPhotos = async() => {
-      fetch('https://et63potkt6.execute-api.us-east-1.amazonaws.com/dev/hello')
+    const fetchNews = async() => {
+      fetch('https://xglupt6p4k.execute-api.us-east-1.amazonaws.com/dev/getNews')
       .then(function(response) {
         return response.json();
       }).then(function(data) {
@@ -185,7 +185,7 @@ function App() {
         setData(data);
       });
     }
-    fetchPhotos();
+    fetchNews();
   }, []);
 
   const sortCategories = getTopCategories(data);
