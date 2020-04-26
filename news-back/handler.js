@@ -96,7 +96,7 @@ module.exports.getNews = async event => {
 
   const newsItems = await dynamo.scan({TableName: "news"}).promise();
 
-  if (newsItems.Items.length < 0) {
+  if (newsItems.Items.length > 0) {
     return {
       statusCode: 200,
       headers: {

@@ -67,7 +67,7 @@ functions:
             method: get
             cors: true
 
-  hello:
+  getNews:
     handler: handler.getNews
     events:
       - http:
