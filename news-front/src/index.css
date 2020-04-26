@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Forum&family=Libre+Caslon+Text&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
 
 body {
   margin: 1rem;
@@ -20,22 +21,17 @@ header h1 {
 }
 
 h1, h2, h3, h4, h5 {
-  font-family: 'Forum', cursive;
+  font-family: 'Playfair Display', serif;
 }
 
-h1 a, h2 a, h3 a, h4 a, h5 a {
-  font-family: 'Forum', cursive;
-}
-
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.newsItem h1 {
+  font-family: 'Playfair Display', serif;
+  font-weight: normal;
 }
 
 .categoriesContainer {
   display:grid;
-  grid-template-columns: repeat( auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat( auto-fit, minmax(480px, minmax(0, 1fr)));
   column-gap: 1rem;
 }
 
@@ -106,6 +102,16 @@ code {
   justify-content: center;
 }
 
+.articleInfo .source {
+  text-transform: uppercase;
+  color: lightslategray;
+}
+
+.articleInfo .displayCategory {
+  text-transform: lowercase;
+  color: brown;
+}
+
 .newsItem-size-1 h1{
   font-size: 2rem;
   line-height: 2rem;
@@ -116,49 +122,22 @@ code {
   line-height: 1.5rem;
 }
 
+.newsItem-size-3 h1 {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+}
+
+.newsItem-size-3 p {
+  display: none;
+}
+
 .newsItem-size-4 h1 {
   font-size: 1rem;
-  line-height: 1rem;
+  line-height: 1.2rem;
 }
 
 .newsItem-size-4 p {
   display: none;
-}
-
-.newsItem-size-4 .articleCoverContainer {
-  /*display: none;*/
-}
-
-@media (min-width: 1040px) {
-
-  .categoriesContainer {
-    display: grid;
-    margin: auto;
-    grid-template-columns: minmax(480px, 1fr) minmax(480px, 1fr);
-    grid-template-rows: auto;
-    grid-template-areas: 
-      "toparealeft toparearight"
-      "othersleft othersright";
-    max-width: 1300px;
-  }
-
-  .categoriesHeader {
-    grid-column: 1 / span 1;
-  }
-
-  .category-0 {
-    grid-column: 2 / span 1;
-  }
-
-  .categoryContainer:nth-child(odd) {
-    grid-column: 1 / span 1;
-  
-  }
-
-  .categoryContainer:nth-child(even) {
-    grid-column: 2 / span 1;
-  }
-
 }
 
 .categoryHeading {
@@ -183,6 +162,96 @@ code {
 
 .categoryHeading.category-4 {
   background-color: #355C7D;
+}
+
+
+.newsItem-size-4 .articleCoverContainer {
+  /*display: none;*/
+}
+
+@media (min-width: 1040px) {
+
+  .categoriesContainer {
+    display: grid;
+    margin: auto;
+    grid-template-columns: minmax(480px, 1fr) minmax(480px, minmax(0, 1fr)); 
+    grid-template-rows: auto;
+    max-width: 1300px;
+  }
+
+  .categoriesHeader {
+    grid-column: 1 / span 1;
+  }
+
+  .category-0 {
+    grid-column: 2 / span 1;
+  }
+
+  .categoryContainer:nth-child(odd) {
+    grid-column: 1 / span 1;
+  
+  }
+
+  .categoryContainer:nth-child(even) {
+    grid-column: 2 / span 1;
+  }
+
+}
+
+@media (min-width: 806px) and (max-width: 1039px) {
+
+  .categoriesContainer {
+    display: grid;
+    margin: auto;
+    grid-template-columns: repeat(auto-fit, minmax(368px, 1fr));
+    grid-template-rows: auto;
+    max-width: 1300px;
+  }
+
+  .categoryNews {
+    display:grid;
+    grid-template-columns: repeat( auto-fit, minmax(168px, 1fr));
+    column-gap: 16px;
+  }  
+
+  .articleCoverContainer img {
+    max-width: 148px;
+  }
+
+  .categoriesHeader {
+    grid-column: 1 / span 1;
+  }
+
+  .category-0 {
+    grid-column: 2 / span 1;
+  }
+
+  .categoryContainer:nth-child(odd) {
+    grid-column: 1 / span 1;
+  
+  }
+
+  .categoryContainer:nth-child(even) {
+    grid-column: 2 / span 1;
+  }
+
+  .weekSummary {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: repeat( auto-fit, minmax(120px, 1fr) );
+    column-gap: 0.2rem;
+    row-gap: 0.2rem;
+    grid-auto-rows: 36px;
+    padding: 0.2rem;
+    background-color: white;
+  }
+  
+  .weekSummary span {
+    font-size: 0.6rem;
+    color: white;
+    background-color: #355C7D;
+  }
 }
 
 /* Single column display for phones */
@@ -212,6 +281,13 @@ code {
 
   .weekSummary a {
     color: white;
+  }
+
+  .categoryNews article {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: lightgray;
+    padding-bottom: 1rem;
   }
 
 }

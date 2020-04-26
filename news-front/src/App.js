@@ -74,7 +74,7 @@ function getTopCategories(data) {
   console.log("First hit: " + categoryTags[0]);
 
   let sortedCategoryTags = categoryTags.sort(( a, b) => {
-    return categories.get(b) - categories.get(a);
+    return categories.get(a) - categories.get(b);
   });
 
   console.log("Top hit: " + sortedCategoryTags[0] + " " + categories.get(sortedCategoryTags[0]));
@@ -113,7 +113,7 @@ function getTopCategories(data) {
 
     sortedCategoryTags.forEach( category => {
 
-      if (categories.get(category) > Math.min(data.Items.length / 10, 1)) {
+      if (categories.get(category) > Math.min(data.Items.length / 15, 1)) {
         if ((item.item.data.categories.includes(category)) && (item.item.data.assigned !==true)) {
           
           var categoryAssignment = categoryAssignments.get(category);
@@ -121,6 +121,11 @@ function getTopCategories(data) {
           if (categoryAssignment.assignedNews.length < categoryAssignment.demand) {
 
             item.item.data.assigned = true;
+            if( item.item.data.categories[0].localeCompare(category) !== 0 ) {
+              item.item.displayCategory = item.item.data.categories[0];
+            } else {
+              item.item.displayCategory = item.item.data.categories[1];
+            }
             categoryAssignment.assignedNews.push(item);
   
           }
