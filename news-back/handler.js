@@ -55,17 +55,25 @@ async function fetchAndStoreFeed(feedName, feedUrl) {
     requestItems.push(PutRequest)
   });
 
-  if (requestItems.length > 25) {
+  /*if (requestItems.length > 25) {
     requestItems = requestItems.slice(0, 24);
-  }
+  }*/
 
-  var params = {
-    RequestItems: {
-      "news": requestItems
-    }
-  }
   
-  await dynamo.batchWrite(params).promise(); 
+  
+  do {
+
+    var saveBatch = requestItems.splice(0, Math.min(25, requestItems.length));
+
+    var params = {
+      RequestItems: {
+        "news": saveBatch
+      }
+    }
+    await dynamo.batchWrite(params).promise(); 
+
+  } while( requestItems.length > 0);
+
 }
 
 module.exports.updateFeeds = async event => {
