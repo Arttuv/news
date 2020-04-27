@@ -40,27 +40,35 @@ async function fetchAndStoreFeed(feedName, feedUrl) {
   let requestItems = []
 
   feed.items.forEach(item => {
-    console.log(item.title + ':' + item.link + " " + getWeekNumber(new Date(item.isoDate)));
+    
+    if( !requestItems.some(old => {
+      return old.PutRequest.Item.guid === item.guid
+    })) {
 
-    item["weekNumber"] = getWeekNumber(new Date(item.isoDate));
-    item["feedName"] = feedName;
+      console.log(item.title + ':' + item.link + " " + getWeekNumber(new Date(item.isoDate)));
 
-    var PutRequest = {
-      PutRequest: {
-      Item: {
-        guid: item.guid,
-        item: {data: item}
-      }}
+      item["weekNumber"] = getWeekNumber(new Date(item.isoDate));
+      item["feedName"] = feedName;
+
+      var PutRequest = {
+        PutRequest: {
+        Item: {
+          guid: item.guid,
+          item: {data: item}
+        }}
+      }
+
+      
+      requestItems.push(PutRequest)
+
     }
-    requestItems.push(PutRequest)
+    
   });
 
   /*if (requestItems.length > 25) {
     requestItems = requestItems.slice(0, 24);
   }*/
 
-  
-  
   do {
 
     var saveBatch = requestItems.splice(0, Math.min(25, requestItems.length));
