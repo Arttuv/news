@@ -139,7 +139,7 @@ const CategorizedLayout = ({ data, feedName }) => {
               assignment.assignedNews.length > 0 && (
               <div key={"category" + assignment.category} id={"category" + assignment.category} className={"categoryContainer " + categoryTags.get(assignment.category) + " categorySize-" + assignment.assignedNews.length} >
                 <h1 className="categoryTitle">{assignment.category}</h1>
-                <div className="categoryNews">
+                <div className={"categoryNews" + " categoryNewsSize-" + assignment.assignedNews.length}>
                   {assignment.assignedNews.map( newsItem => {
                     return (
                       <article key={"newsItem" + newsItem.guid} className={"newsItem newsItem-" + newsItem.item.sizeCategory}>
