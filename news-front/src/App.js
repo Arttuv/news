@@ -213,20 +213,13 @@ function App() {
   return (
     <div>
       <Layout>
-        {sortCategories.categoryAssignments !== undefined &&
+        {data.Items.length !== 0 ?
           <CategorizedLayout data={sortCategories} feedName="Kaikki"/>
+          : <div style={{textAlign: 'center'}}><h1>Noudetaan uutisia...</h1></div>
         }
-        
       </Layout>
+      
     </div>
   );
 }
 export default App;
-
-
-
-/*
-<FeedLayout data={data} feedName="Yle Pääuutiset" />
-        <FeedLayout data={data} feedName="Yle Tiede" />
-        <FeedLayout data={data} feedName="Yle Luonto" />
-*/
