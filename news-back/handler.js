@@ -45,8 +45,6 @@ async function fetchAndStoreFeed(feedName, feedUrl) {
       return old.PutRequest.Item.guid === item.guid
     })) {
 
-      console.log(item.title + ':' + item.link + " " + getWeekNumber(new Date(item.isoDate)));
-
       item["weekNumber"] = getWeekNumber(new Date(item.isoDate));
       item["feedName"] = feedName;
 
@@ -58,7 +56,6 @@ async function fetchAndStoreFeed(feedName, feedUrl) {
         }}
       }
 
-      
       requestItems.push(PutRequest)
 
     }
@@ -102,8 +99,10 @@ module.exports.updateFeeds = async event => {
 module.exports.getNews = async event => {
   console.log("test");
 
+  let weekNumber = getWeekNumber(new Date());
   const newsItems = await dynamo.scan({TableName: "news"}).promise();
-
+  
+  newsItems.Items = newsItems.Items.filter( item => item.item.data.weekNumber !== undefined && (weekNumber[0] === item.item.data.weekNumber[0] && weekNumber[1] === item.item.data.weekNumber[1]));
   if (newsItems.Items.length > 0) {
     return {
       statusCode: 200,

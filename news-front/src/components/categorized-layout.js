@@ -92,14 +92,14 @@ function getWeekNumber(d) {
     return {"categories": categories, "sortedTags": sortedCategoryTags}
   }
 
-const CategorizedLayout = ({ data, feedName }) => {
+const CategorizedLayout = ({ data, feedName, limits }) => {
   
-    const sortCategories = data; // getTopCategories(data, feedName, getWeekNumber(new Date()));
-    const usedArticles = [];
-
+    //const sortCategories = data; // getTopCategories(data, feedName, getWeekNumber(new Date()));
+    //const usedArticles = [];
+    const week = getWeekNumber(new Date());
     const colors = new Map();
   
-    var counter = 0;
+   /* var counter = 0;
     sortCategories.sortedTags.slice(4).forEach( category => {
       colors.set(category, "#355C7D");
     })
@@ -113,17 +113,15 @@ const CategorizedLayout = ({ data, feedName }) => {
     const categoryTags = new Map();
     sortCategories.sortedTags.forEach( (item, index) => {
       categoryTags.set(item, "category-" + index);
-    })
+    })*/
   
     // style = {{backgroundColor: colors.get(category)}
   
     return (
       <div className="categoriesContainer">
         <div className="categoriesHeader">
-       
         <div className="weekSummary">
-
-          {[...data.categoryAssignments.values()].map(assignment => {
+          {data.map(assignment => {
               return (assignment.assignedNews.length > 0 ? (
                 <span key={"taglink" + assignment.category}><a href={"#category" + assignment.category}>{assignment.category}</a></span>
               ) : null)    
@@ -131,28 +129,29 @@ const CategorizedLayout = ({ data, feedName }) => {
           </div>
         </div>
   
-      
-          
-          {[...data.categoryAssignments.values()].map(assignment => {
+          {data.map(assignment => {
   
             return (
               assignment.assignedNews.length > 0 && (
-              <div key={"category" + assignment.category} id={"category" + assignment.category} className={"categoryContainer " + categoryTags.get(assignment.category) + " categorySize-" + assignment.assignedNews.length} >
-                <h1 className="categoryTitle">{assignment.category}</h1>
+              <div key={"category" + assignment.category} id={"category" + assignment.category} className={"categoryContainer categorySize-" + assignment.assignedNews.length + " " + assignment.minWeightPercentage} >
+              <h1 className="categoryTitle">{assignment.category}</h1>
+              {/*<div>{assignment.totalCategoryWeight + " " + assignment.minWeight}</div> */}
+             {/*<div>{assignment.minWeightPercentage}</div>*/}
                 <div className={"categoryNews" + " categoryNewsSize-" + assignment.assignedNews.length}>
                   {assignment.assignedNews.map( newsItem => {
                     return (
-                      <article key={"newsItem" + newsItem.guid} className={"newsItem newsItem-" + newsItem.item.sizeCategory}>
-                        <div className="articleInfo">
-                          <div className="source">Yle</div>
-                          <div className="displayCategory">{"#"+ newsItem.item.displayCategory}</div>
-                        </div>
+                      <article key={"newsItem" + newsItem.guid} className={"newsItem newsItem-" + newsItem.item.sizeCategory + " " + newsItem.item.weightCategory}>
                         <h1><a href={newsItem.guid}>{newsItem.item.data.title}</a></h1>
                         <p>{newsItem.item.data.contentSnippet}</p>
                         {newsItem.item.data.enclosure !== undefined && (
                           <div className="articleCoverContainer">
                               <img className="articleCover" src={newsItem.item.data.enclosure.url}></img>
                           </div>)}
+                          <div className="articleInfo">
+                          <div className="source">{newsItem.item.data.feedName}</div>
+                          <div className="displayCategory">{"#"+ newsItem.item.displayCategory}</div>
+                          {/*<div>{"Weight: " + newsItem.item.categoryWeight + " Category: " + newsItem.item.weightCategory}</div>*/}
+                        </div>
                       </article> 
                     )
                   })}
